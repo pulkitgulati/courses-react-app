@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Select from "react-select";
 import { options } from "../../config/options";
 import "../../config/i18n";
-import { withNamespaces } from "react-i18next";
+import { withTranslation } from "react-i18next";
 
 export class HomePage extends Component {
   constructor(props) {
@@ -64,4 +64,4 @@ export class HomePage extends Component {
   }
 }
 
-export default withNamespaces("translations")(HomePage);
+export default withTranslation("translations")(HomePage);
