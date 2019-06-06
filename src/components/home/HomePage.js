@@ -28,16 +28,6 @@ export class HomePage extends Component {
 
   componentDidMount() {
     console.log("component did mount");
-    this.setState(
-      {
-        lang: options.filter(item => item.value === this.props.i18n.language)
-      },
-      () => console.log(this.state)
-    );
-  }
-
-  componentDidMount() {
-    console.log("component did mount");
     if (this.props.i18n.language) {
       this.setState(
         {
