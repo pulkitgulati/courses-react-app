@@ -50,7 +50,7 @@ export class HomePage extends Component {
           </Link>
         </div>
         <br />
-        <div>
+        <div style={{ width: "200px" }}>
           <Select
             defaultValue={options[0]}
             options={options}
