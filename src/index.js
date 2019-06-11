@@ -11,7 +11,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 ReactDOM.render(
   <I18nextProvider i18n={i18n}>
     <Router>
-      <App />
+      <App props={i18n} />
     </Router>
   </I18nextProvider>,
   document.getElementById("root")
