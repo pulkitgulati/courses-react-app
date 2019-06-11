@@ -31,7 +31,7 @@ export class HomePage extends Component {
 
   componentDidMount() {
     this.setState({
-      lang: this.props.option.value ? this.props.option : options[1]
+      lang: this.props.option.value ? this.props.option : options[0]
     });
     // this.props.i18n.changeLanguage(options[2].value);
   }
