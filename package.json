@@ -3,21 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.10.1",
+    "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.55",
     "bootstrap": "^4.3.1",
     "i18next": "^17.0.2",
+    "immutable": "^4.0.0-rc.12",
+    "material-table": "^1.57.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-i18next": "^10.11.0",
+    "react-redux": "^7.0.3",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.1",
     "react-select": "^3.0.3",
-    "react-redux": "^7.0.3",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
     "redux-persist": "^5.10.0",
-    "redux-thunk": "^2.3.0",
-    "immutable": "^4.0.0-rc.12"
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
