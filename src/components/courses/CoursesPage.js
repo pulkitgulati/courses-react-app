@@ -23,10 +23,11 @@ import { withStyles } from "@material-ui/core/styles";
 
 //declaring global variables to hold values of grid controls
 
-var clientName_GRC = null;
-var company_GR = null;
-var position_GR = null;
+var studentName_GRC = null;
+var grade_GR = null;
+var courseName_GR = null;
 var comments_GR = null;
+var lastId = 2;
 const GridDataLimit = 5;
 const isReadOnly=false;
 
@@ -60,13 +61,13 @@ class CoursesPage extends React.Component {
     super(props);
     const { classes } = this.props;
     this.state = {
-      ClientsSpokenTo: [
-        {"clientsID":4225,"clientName":"Ram","company":"Ayodhya","position":"King","comments":"Jai Shri Ram!","userCPDRDataID":0,"createdBy":0,"createdOn":"0001-01-01T00:00:00","tableData":{"id":0}},
-        {"clientsID":4226,"clientName":"Student1","company":"Student Surname","position":"Stock Market","comments":"nice..","userCPDRDataID":0,"createdBy":0,"createdOn":"0001-01-01T00:00:00","tableData":{"id":1}}
+      StudentsEnrolled: [
+        {"studentID":1,"studentName":"Ram","grade":"King","courseName":"King","comments":"Good Lord!"},
+        {"studentID":2,"studentName":"Student1","grade":"Student","courseName":"Stock Market","comments":"nice.."}
       ],
       countGrid: 2,
-      selectedCompany: " ",
-      selectedPosition: " ",
+      selectedgrade: " ",
+      selectedcourseName: " ",
       selectedComments: " ",
 
       isLocked: this.props.isLocked,
@@ -74,15 +75,15 @@ class CoursesPage extends React.Component {
 
       columns: [
         {
-          title: "First Name",
-          field: "clientName",
+          title: "Student Name",
+          field: "studentName",
           editComponent: (rowData) => (
             <TextField
-              id="GCST_edit-clientName"
+              id="GCST_edit-studentName"
               variant="outlined"
               multiline
-              defaultValue={rowData.rowData.clientName}
-              onChange={this.handleClientName}
+              defaultValue={rowData.rowData.studentName}
+              onChange={this.handlestudentName}
               className={classes.formControlTextbox}
               size="small"
               autoFocus
@@ -90,15 +91,15 @@ class CoursesPage extends React.Component {
           ),
         },
         {
-          title: "Last Name",
-          field: "company",
+          title: "Grade",
+          field: "grade",
           editComponent: (rowData) => (
             <TextField
-              id="GCST_edit-company"
+              id="GCST_edit-grade"
               variant="outlined"
               multiline
-              defaultValue={rowData.rowData.company}
-              onChange={this.handleCompany}
+              defaultValue={rowData.rowData.grade}
+              onChange={this.handlegrade}
               className={classes.formControlTextbox}
               size="small"
             />
@@ -106,14 +107,14 @@ class CoursesPage extends React.Component {
         },
         {
           title: "Course",
-          field: "position",
+          field: "courseName",
           editComponent: (rowData) => (
             <TextField
-              id="GCST_edit-position"
+              id="GCST_edit-courseName"
               variant="outlined"
               multiline
-              defaultValue={rowData.rowData.position}
-              onChange={this.handlePosition}
+              defaultValue={rowData.rowData.courseName}
+              onChange={this.handlecourseName}
               className={classes.formControlTextbox}
               size="small"
             />
@@ -223,31 +224,56 @@ class CoursesPage extends React.Component {
 
   componentDidMount() {
     
+    //Add Row Click event if clicked outside the icon but within the circle.
+    if (document.getElementById("GCST_ADDBox") != null) {
+      document
+        .getElementById("GCST_ADDBox")
+        .parentNode.parentNode.addEventListener("click", (event) => {
+          this.onAddRowClick(event);
+        });
+    }
   }
 
-  getClientsSpokenToData() {
+  getStudentsEnrolledData() {
     //Call Get API...
+    this.setState({
+      showLoading: false
+    });
   }
 
-  postClientsSpokenToData(newData) {
+  postStudentsEnrolledData(newData) {
     //Call Post API...
+    console.log('post called');
+    this.setState({
+      showLoading: true
+    });
+    var newArr = this.state.StudentsEnrolled;
+    console.log(newArr);
+    newArr.push(newData);
+    this.setState({
+      countGrid: lastId,
+      StudentsEnrolled: newArr
+    }, () => { 
+      console.log('Added', this.state.StudentsEnrolled, this.state.countGrid);
+      this.getStudentsEnrolledData();
+    });
   }
 
-  deleteClientsSpokenToData(oldData) {
+  deleteStudentsEnrolledData(oldData) {
     //Call Delete API...
   }
 
-  handleClientName = (e) => {
-    clientName_GRC = e.target.value;
+  handlestudentName = (e) => {
+    studentName_GRC = e.target.value;
   };
 
-  handleCompany = (e) => {
-    company_GR = e.target.value;
-    // this.setState({ selectedCompany: e.target.value });
+  handlegrade = (e) => {
+    grade_GR = e.target.value;
+    // this.setState({ selectedgrade: e.target.value });
   };
-  handlePosition = (e) => {
-    position_GR = e.target.value;
-    //this.setState({ selectedPosition: e.target.value });
+  handlecourseName = (e) => {
+    courseName_GR = e.target.value;
+    //this.setState({ selectedcourseName: e.target.value });
   };
 
   handleComments = (e) => {
@@ -256,9 +282,9 @@ class CoursesPage extends React.Component {
   };
 
   resetStateData() {
-    clientName_GRC = null;
-    position_GR = null;
-    company_GR = null;
+    studentName_GRC = null;
+    courseName_GR = null;
+    grade_GR = null;
     comments_GR = null;
     //this.storeActiveTabPanelValue("0");
   }
@@ -269,16 +295,16 @@ class CoursesPage extends React.Component {
   onAddRowClick(event) {
     if (this.state.countGrid >= GridDataLimit) {
       alert(
-        "You cannot add more than " + GridDataLimit + " Clients to the list."
+        "You cannot add more than " + GridDataLimit + " Students to the list."
       );
       event.stopPropagation();
       return;
     }
-    //this.storeActiveTabPanelValue("ClientSpoken");
+    //this.storeActiveTabPanelValue("StudentSpoken");
   }
 
   onEditRowClick(event) {
-    //this.storeActiveTabPanelValue("ClientSpoken");
+    //this.storeActiveTabPanelValue("StudentSpoken");
   }
 
   render() {
@@ -287,7 +313,6 @@ class CoursesPage extends React.Component {
       <Fragment>
          <div
             id={this.props.id}
-            className={this.state.isLocked ? classes.IconDisabled : null}
           >
             <MaterialTable
               components={{
@@ -305,7 +330,7 @@ class CoursesPage extends React.Component {
               }}
               title=""
               columns={this.state.columns}
-              data={this.state.ClientsSpokenTo}
+              data={this.state.StudentsEnrolled}
               icons={this.state.tableIcons}
               isLoading={this.state.showLoading}
               style={{
@@ -322,27 +347,31 @@ class CoursesPage extends React.Component {
                 {
                 onRowAdd: (newData) =>
                   new Promise((resolve, reject) => {
+                    lastId = lastId + 1;
                     // setTimeout(() => {
-                    newData.clientName =
-                      clientName_GRC === null ? "" : clientName_GRC;
-                    newData.userCPDRDataID = this.props.userCPDRDataID;
-                    newData.createdBy = Number(localStorage.getItem("userId"));
-                    newData.company = company_GR === null ? "" : company_GR;
+                    newData.studentID = lastId;
+                    newData.studentName =
+                      studentName_GRC === null ? "" : studentName_GRC;
+                    
+                    newData.grade = grade_GR === null ? "" : grade_GR;
 
-                    newData.position = position_GR === null ? "" : position_GR;
+                    newData.courseName = courseName_GR === null ? "" : courseName_GR;
 
                     newData.comments = comments_GR === null ? "" : comments_GR;
 
+                    var obj = {"id": lastId - 1};
+                    newData.tableData= obj;
+
                     var errorMsg = " ";
 
-                    if (newData.clientName === "") {
-                      errorMsg = "Please insert Client Name.";
+                    if (newData.studentName === "") {
+                      errorMsg = "Please insert Student Name.";
                     }
-                    if (newData.company === "") {
-                      errorMsg = errorMsg + "\nPlease insert Company.";
+                    if (newData.grade === "") {
+                      errorMsg = errorMsg + "\nPlease insert grade.";
                     }
-                    if (newData.position === "") {
-                      errorMsg = errorMsg + "\nPlease insert Position.";
+                    if (newData.courseName === "") {
+                      errorMsg = errorMsg + "\nPlease insert course Name.";
                     }
 
                     if (errorMsg !== " ") {
@@ -353,11 +382,11 @@ class CoursesPage extends React.Component {
                       alert(
                         "You cannot add more than " +
                           GridDataLimit +
-                          " Clients to the list."
+                          " Students to the list."
                       );
                     } else {
                       this.setState({ showLoading: true });
-                      this.postClientsSpokenToData(newData);
+                      this.postStudentsEnrolledData(newData);
                       resolve();
                     }
                     // }, 600);
@@ -368,26 +397,26 @@ class CoursesPage extends React.Component {
                     //resolve();
 
                     if (oldData) {
-                      newData.clientName =
-                        clientName_GRC === null
-                          ? oldData.clientName
-                          : clientName_GRC === ""
+                      newData.studentName =
+                        studentName_GRC === null
+                          ? oldData.studentName
+                          : studentName_GRC === ""
                           ? ""
-                          : clientName_GRC;
+                          : studentName_GRC;
 
-                      newData.company =
-                        company_GR === null
-                          ? oldData.company
-                          : company_GR === ""
+                      newData.grade =
+                        grade_GR === null
+                          ? oldData.grade
+                          : grade_GR === ""
                           ? ""
-                          : company_GR;
+                          : grade_GR;
 
-                      newData.position =
-                        position_GR === null
-                          ? oldData.position
-                          : position_GR === ""
+                      newData.courseName =
+                        courseName_GR === null
+                          ? oldData.courseName
+                          : courseName_GR === ""
                           ? ""
-                          : position_GR;
+                          : courseName_GR;
 
                       newData.comments =
                         comments_GR === null
@@ -396,26 +425,22 @@ class CoursesPage extends React.Component {
                           ? ""
                           : comments_GR;
 
-                      newData.createdBy = Number(
-                        localStorage.getItem("userId")
-                      );
-
                       var errorMsg = " ";
-                      if (newData.clientName === "") {
-                        errorMsg = "Please insert Client Name.";
+                      if (newData.studentName === "") {
+                        errorMsg = "Please insert Student Name.";
                       }
-                      if (newData.company === "") {
-                        errorMsg = errorMsg + "\nPlease insert Company.";
+                      if (newData.grade === "") {
+                        errorMsg = errorMsg + "\nPlease insert grade.";
                       }
-                      if (newData.position === "") {
-                        errorMsg = errorMsg + "\nPlease insert Position.";
+                      if (newData.courseName === "") {
+                        errorMsg = errorMsg + "\nPlease insert course Name.";
                       }
                       if (errorMsg !== " ") {
                         reject();
                         alert(errorMsg);
                       } else {
                         this.setState({ showLoading: true });
-                        this.postClientsSpokenToData(newData);
+                        this.postStudentsEnrolledData(newData);
                         resolve();
                       }
                     }
@@ -425,7 +450,7 @@ class CoursesPage extends React.Component {
                   new Promise((resolve) => {
                     // setTimeout(() => {
                     this.setState({ showLoading: true });
-                    this.deleteClientsSpokenToData(oldData);
+                    this.deleteStudentsEnrolledData(oldData);
                     resolve();
                     // }, 600);
                   }),
@@ -434,7 +459,7 @@ class CoursesPage extends React.Component {
                 paging: false,
                 sorting: false,
                 draggable: false,
-                addRowPosition:"first"
+                addRowcourseName:"first"
               }}
             />
           </div>
