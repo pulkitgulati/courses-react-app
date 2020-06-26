@@ -28,6 +28,7 @@ var company_GR = null;
 var position_GR = null;
 var comments_GR = null;
 const GridDataLimit = 5;
+const isReadOnly=false;
 
 const styles = (theme) => ({
   IconDisabled: {
@@ -61,7 +62,7 @@ class CoursesPage extends React.Component {
     this.state = {
       ClientsSpokenTo: [
         {"clientsID":4225,"clientName":"Ram","company":"Ayodhya","position":"King","comments":"Jai Shri Ram!","userCPDRDataID":0,"createdBy":0,"createdOn":"0001-01-01T00:00:00","tableData":{"id":0}},
-        {"clientsID":4226,"clientName":"Ramdev","company":"Patanjali","position":"CEO","comments":"aankh mare..","userCPDRDataID":0,"createdBy":0,"createdOn":"0001-01-01T00:00:00","tableData":{"id":1}}
+        {"clientsID":4226,"clientName":"Student1","company":"Student Surname","position":"Stock Market","comments":"nice..","userCPDRDataID":0,"createdBy":0,"createdOn":"0001-01-01T00:00:00","tableData":{"id":1}}
       ],
       countGrid: 2,
       selectedCompany: " ",
@@ -314,7 +315,11 @@ class CoursesPage extends React.Component {
                 marginTop: "10px",
                 marginLeft: "20px",
               }}
-              editable={{
+              editable={
+                isReadOnly
+                ? null
+                : 
+                {
                 onRowAdd: (newData) =>
                   new Promise((resolve, reject) => {
                     // setTimeout(() => {
