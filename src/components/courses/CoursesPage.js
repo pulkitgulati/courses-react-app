@@ -19,6 +19,7 @@ import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import { withStyles } from "@material-ui/core/styles";
+import axios from "axios";
 //import loadingImg from "../images/LoadingImg.gif";
 
 //declaring global variables to hold values of grid controls
@@ -79,7 +80,7 @@ class CoursesPage extends React.Component {
           field: "studentName",
           editComponent: (rowData) => (
             <TextField
-              id="GCST_edit-studentName"
+              id="GRD_edit-studentName"
               variant="outlined"
               multiline
               defaultValue={rowData.rowData.studentName}
@@ -95,7 +96,7 @@ class CoursesPage extends React.Component {
           field: "grade",
           editComponent: (rowData) => (
             <TextField
-              id="GCST_edit-grade"
+              id="GRD_edit-grade"
               variant="outlined"
               multiline
               defaultValue={rowData.rowData.grade}
@@ -110,7 +111,7 @@ class CoursesPage extends React.Component {
           field: "courseName",
           editComponent: (rowData) => (
             <TextField
-              id="GCST_edit-courseName"
+              id="GRD_edit-courseName"
               variant="outlined"
               multiline
               defaultValue={rowData.rowData.courseName}
@@ -125,7 +126,7 @@ class CoursesPage extends React.Component {
           field: "comments",
           editComponent: (rowData) => (
             <TextField
-              id="GCST_edit-comments"
+              id="GRD_edit-comments"
               variant="outlined"
               multiline
               defaultValue={rowData.rowData.comments}
@@ -139,7 +140,7 @@ class CoursesPage extends React.Component {
       tableIcons: {
         Add: props => (
           <AddBox
-            id="GCST_ADDBox"
+            id="GRD_ADDBox"
             {...props}
             style={{ backgroundColor: 'transparent' }}
             //className={classes.MuiIconButtonMargin}
@@ -151,7 +152,7 @@ class CoursesPage extends React.Component {
         Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
         Clear: forwardRef((props, ref) => (
           <Clear
-            id="GCST_clear"
+            id="GRD_clear"
             {...props}
             ref={ref}
             className={this.state.isLocked ? classes.IconDisabled : null}
@@ -160,18 +161,18 @@ class CoursesPage extends React.Component {
         Delete: forwardRef((props, ref) => (
           <DeleteOutline
             {...props}
-            id="GCST_DeleteOutline"
+            id="GRD_DeleteOutline"
             ref={ref}
             className={this.state.isLocked ? classes.IconDisabled : null}
           />
         )),
         DetailPanel: forwardRef((props, ref) => (
-          <ChevronRight {...props} id="GCST_ChevronRight" ref={ref} />
+          <ChevronRight {...props} id="GRD_ChevronRight" ref={ref} />
         )),
         Edit: forwardRef((props, ref) => (
           <Edit
             {...props}
-            id="GCST_edit"
+            id="GRD_edit"
             ref={ref}
             className={this.state.isLocked ? classes.IconDisabled : null}
             onClick={(event) => {
@@ -182,52 +183,64 @@ class CoursesPage extends React.Component {
         Search: forwardRef((props, ref) => (
           <Search
             {...props}
-            id="GCST_Search"
+            id="GRD_Search"
             ref={ref}
             className={this.state.isLocked ? classes.IconDisabled : null}
           />
         )),
         Export: forwardRef((props, ref) => (
-          <SaveAlt {...props} id="GCST_Export" ref={ref} />
+          <SaveAlt {...props} id="GRD_Export" ref={ref} />
         )),
         Filter: forwardRef((props, ref) => (
-          <FilterList {...props} id="GCST_Filter" ref={ref} />
+          <FilterList {...props} id="GRD_Filter" ref={ref} />
         )),
         FirstPage: forwardRef((props, ref) => (
-          <FirstPage {...props} id="GCST_FirstPage" ref={ref} />
+          <FirstPage {...props} id="GRD_FirstPage" ref={ref} />
         )),
         LastPage: forwardRef((props, ref) => (
-          <LastPage {...props} id="GCST_LastPage" ref={ref} />
+          <LastPage {...props} id="GRD_LastPage" ref={ref} />
         )),
         NextPage: forwardRef((props, ref) => (
-          <ChevronRight {...props} id="GCST_NextPage" ref={ref} />
+          <ChevronRight {...props} id="GRD_NextPage" ref={ref} />
         )),
         PreviousPage: forwardRef((props, ref) => (
-          <ChevronLeft {...props} id="GCST_PervPage" ref={ref} />
+          <ChevronLeft {...props} id="GRD_PervPage" ref={ref} />
         )),
         ResetSearch: forwardRef((props, ref) => (
-          <Clear {...props} id="GCST_ResetSearch" ref={ref} />
+          <Clear {...props} id="GRD_ResetSearch" ref={ref} />
         )),
 
         SortArrow: forwardRef((props, ref) => (
-          <ArrowDownward {...props} id="GCST_SortArrow" ref={ref} />
+          <ArrowDownward {...props} id="GRD_SortArrow" ref={ref} />
         )),
         ThirdStateCheck: forwardRef((props, ref) => (
-          <Remove {...props} id="GCST_ThirdStateCheck" ref={ref} />
+          <Remove {...props} id="GRD_ThirdStateCheck" ref={ref} />
         )),
         ViewColumn: forwardRef((props, ref) => (
-          <ViewColumn {...props} id="GCST_viewColumn" ref={ref} />
+          <ViewColumn {...props} id="GRD_viewColumn" ref={ref} />
         )),
       },
     };
   }
 
   componentDidMount() {
+    const gridData = JSON.parse(
+      sessionStorage.getItem("StudentsGrid")
+    );
+
+    if (gridData === null) {
+      this.getStudentsEnrolledData();
+    } else {
+      this.setState({
+        StudentsEnrolled: gridData,
+        countGrid: gridData.length,
+      });
+    }
     
     //Add Row Click event if clicked outside the icon but within the circle.
-    if (document.getElementById("GCST_ADDBox") != null) {
+    if (document.getElementById("GRD_ADDBox") != null) {
       document
-        .getElementById("GCST_ADDBox")
+        .getElementById("GRD_ADDBox")
         .parentNode.parentNode.addEventListener("click", (event) => {
           this.onAddRowClick(event);
         });
@@ -235,32 +248,88 @@ class CoursesPage extends React.Component {
   }
 
   getStudentsEnrolledData() {
-    //Call Get API...
-    this.setState({
-      showLoading: false
+    //Call Get API with axios...
+    const HTTP = axios.create({
+      withCredentials: true,
     });
+
+    //using token and credentials is upto your implementation..
+    const userToken = "xxx";
+    
+    HTTP.get(
+      "URL",
+      {
+        headers: {
+          token: userToken,
+        },
+      }
+    )
+      .then((result) => {
+        this.setState(
+          {
+            StudentsEnrolled: result.data,
+            countGrid: result.data.length,
+            showLoading: false,
+          },
+          () => {
+            sessionStorage.setItem(
+              "StudentsGrid",
+              JSON.stringify(this.state.StudentsEnrolled)
+            );
+          }
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   postStudentsEnrolledData(newData) {
     //Call Post API...
-    console.log('post called');
-    this.setState({
-      showLoading: true
+    sessionStorage.removeItem("StudentsGrid");
+    const HTTP = axios.create({
+      withCredentials: true,
     });
-    var newArr = this.state.StudentsEnrolled;
-    console.log(newArr);
-    newArr.push(newData);
-    this.setState({
-      countGrid: lastId,
-      StudentsEnrolled: newArr
-    }, () => { 
-      console.log('Added', this.state.StudentsEnrolled, this.state.countGrid);
-      this.getStudentsEnrolledData();
-    });
+    const userToken = "xxx";
+    HTTP.post("URL", newData, {
+      headers: {
+        token: userToken,
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((result) => {
+        this.setState({ showLoading: true });
+        this.resetStateData();
+        this.getStudentsEnrolledData();
+      })
+      .catch((error) => {
+        console.log(error);
+        this.resetStateData();
+      });    
   }
 
   deleteStudentsEnrolledData(oldData) {
     //Call Delete API...
+    sessionStorage.removeItem("StudentsGrid");
+
+    const HTTP = axios.create({
+      withCredentials: true,
+    });
+    const userToken = "xxx";
+    HTTP.delete(
+      "URL",
+      {
+        headers: {
+          token: userToken,
+        },
+      }
+    )
+      .then((result) => {
+        this.getStudentsEnrolledData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   handlestudentName = (e) => {
@@ -286,7 +355,6 @@ class CoursesPage extends React.Component {
     courseName_GR = null;
     grade_GR = null;
     comments_GR = null;
-    //this.storeActiveTabPanelValue("0");
   }
   canceledClicked() {
     //alert('hello')
@@ -300,11 +368,10 @@ class CoursesPage extends React.Component {
       event.stopPropagation();
       return;
     }
-    //this.storeActiveTabPanelValue("StudentSpoken");
   }
 
   onEditRowClick(event) {
-    //this.storeActiveTabPanelValue("StudentSpoken");
+    
   }
 
   render() {
@@ -347,9 +414,6 @@ class CoursesPage extends React.Component {
                 {
                 onRowAdd: (newData) =>
                   new Promise((resolve, reject) => {
-                    lastId = lastId + 1;
-                    // setTimeout(() => {
-                    newData.studentID = lastId;
                     newData.studentName =
                       studentName_GRC === null ? "" : studentName_GRC;
                     
@@ -358,9 +422,6 @@ class CoursesPage extends React.Component {
                     newData.courseName = courseName_GR === null ? "" : courseName_GR;
 
                     newData.comments = comments_GR === null ? "" : comments_GR;
-
-                    var obj = {"id": lastId - 1};
-                    newData.tableData= obj;
 
                     var errorMsg = " ";
 
@@ -459,7 +520,8 @@ class CoursesPage extends React.Component {
                 paging: false,
                 sorting: false,
                 draggable: false,
-                addRowcourseName:"first"
+                addRowcourseName:"first",
+                rowStyle: { backgroundColor: "#fff" },
               }}
             />
           </div>
