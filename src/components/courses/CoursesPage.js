@@ -20,7 +20,6 @@ import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
 import { withStyles } from "@material-ui/core/styles";
 import axios from "axios";
-//import loadingImg from "../images/LoadingImg.gif";
 
 //declaring global variables to hold values of grid controls
 
@@ -28,7 +27,6 @@ var studentName_GRC = null;
 var grade_GR = null;
 var courseName_GR = null;
 var comments_GR = null;
-var lastId = 2;
 const GridDataLimit = 5;
 const isReadOnly=false;
 
